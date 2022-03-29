@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import math
 
-debugLevel = 1 # display images if debugLevel = 1
+debugLevel = 0 # display images if debugLevel = 1
 counter = 0
 
 def cropImg(img,x,y,w,h):
@@ -84,8 +84,8 @@ def cropSquareOut_Contours(croppedBoard):
     
     squareSize = round(math.sqrt(sum([cv2.contourArea(x) for x in valid_cnts]) / len(valid_cnts)))
     croppedSquares = []
-    for sX in range(0,8):
-        for sY in range(0,8):
+    for sY in range(0,8):
+        for sX in range(0,8):
             xP = sX * squareSize
             yP = sY * squareSize
             croppedSquares.append(cropImg(croppedBoard,xP,yP,squareSize,squareSize))
@@ -116,7 +116,7 @@ def imageResize(orgImage, resizeFact):
 
 if __name__ == "__main__":
     #img = imageResize(cv2.imread("Board_Examples/medium.PNG",cv2.IMREAD_GRAYSCALE),0.5)
-    img = imageResize(cv2.imread(("Board_Examples/medium2.png")), 0.5)
+    img = imageResize(cv2.imread("Board_Examples/medium2.png"), 0.5)
 
     getBoardCoords(img)
     
