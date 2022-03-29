@@ -30,13 +30,12 @@ def create_pieces(pieces_img, pieces_path, backgrounds_img, backgrounds_path):
             
     return created_pieces_img, created_pieces_path
 
-def save_pieces(pieces_img, pieces_path, backgrounds_img, backgrounds_path, path):
+def save_pieces(pieces_img, pieces_path, path):
     if os.path.exists(path) and os.path.isdir(path):
         shutil.rmtree(path)
     os.mkdir(path)
 
     [pieces_img[i].save(os.path.join(path, pieces_path[i])) for i in range(len(pieces_img))]
-    [backgrounds_img[i].save(os.path.join(path, backgrounds_path[i])) for i in range(len(backgrounds_img))]
 
 if __name__ == '__main__':
     pieces_path = 'pieces_screens/pieces/'
@@ -45,4 +44,4 @@ if __name__ == '__main__':
     
     pieces_img, pieces_paths, backgrounds_img, backgrounds_paths = get_images(pieces_path, backgrounds_path)
     created_pieces_img, created_pieces_path = create_pieces(pieces_img, pieces_paths, backgrounds_img, backgrounds_paths)
-    save_pieces(created_pieces_img, created_pieces_path, backgrounds_img, backgrounds_paths, path)
+    save_pieces(created_pieces_img, created_pieces_path, path)

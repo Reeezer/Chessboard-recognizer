@@ -9,7 +9,8 @@ from board_finder import getBoardCoords, imageResize
 # To output again the board
 
 methods = ['cv.TM_CCOEFF', 'cv.TM_CCOEFF_NORMED', 'cv.TM_CCORR', 'cv.TM_CCORR_NORMED', 'cv.TM_SQDIFF', 'cv.TM_SQDIFF_NORMED']
-meth = 'cv.TM_CCORR_NORMED'
+meth = 'cv.TM_CCOEFF_NORMED'
+nb_resize = 30
 
 def get_pieces_images(path):
     pieces_path = [piece_path for piece_path in os.listdir(path)]
@@ -33,38 +34,89 @@ def recognize_piece(paths, pieces, cell):
         piece = pieces[i]
         path = paths[i]
         
-        for scale in range(20):
+        wC, hC, _ = cell.shape
+        w, h, _ = piece.shape
+        for scale in range(nb_resize):
             cell_copy = cell.copy()
-            cell_copy = imageResize(cell_copy, 0.1*(scale+1))
+            piece_copy = piece.copy()
+            
+            ratio = wC / (w - (nb_resize/2) + scale)
+            piece_copy = imageResize(piece_copy, ratio)
             
             # Apply template Matching
-            method = eval(meth)
-            result = cv.matchTemplate(cell_copy, piece, cv.TM_CCOEFF_NORMED)
-            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-            
-            # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
-            if method in [cv.TM_SQDIFF]:
-                max = min_val
-            else:
-                max = max_val
+            try:
+                method = eval(meth)
+                result = cv.matchTemplate(cell_copy, piece_copy, method)
+                min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
                 
-            if max > max_value:
-                max_value = max
-                max_image = piece
-                max_image_path = path
+                # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
+                if method in [cv.TM_SQDIFF]:
+                    max = min_val
+                else:
+                    max = max_val
+                    
+                if max > max_value:
+                    max_value = max
+                    max_image = piece
+                    max_image_path = path
+            except Exception:
+                pass
                 
+    if max_value > 0.38:
+        split = max_image_path.split('_')
+        if split[0] == 'knight':
+            piece_letter = 'n'
+        else:
+            piece_letter = split[0][0]
+        
+        if split[1] == 'white':
+            return piece_letter.upper()
+        else:
+            return piece_letter.lower()
+    else:
+        return '-'
+    
+def simple_display_board(board):
+    print('Simple board display:')
+    i = 0
+    for piece in board:
+        i += 1
+        print(f"{piece} ", end="")
+        if i % 8 == 0:
+            print()
     print()
-    print(max_image_path)
-    print(f"Best: {max_value:.3f}")
-    cv.imshow("Board's cell", cell)
-    cv.imshow(max_image_path, max_image)
-    cv.waitKey(0) 
-    cv.destroyAllWindows()
+
+def forsyth_edward_display_board(board):
+    print('Forsyth Edward Notation (FEN) board display:')
+    i = 0
+    j = 0
+    nb_space = 0
+    for piece in board:
+        i += 1
+        
+        if piece == '-':
+            nb_space += 1
+        else:
+            if nb_space > 0:
+                print(f"{nb_space}", end="")
+                nb_space = 0
+            print(f"{piece}", end="")
+        
+        if i % 8 == 0:
+            j += 1
+            if nb_space > 0:
+                print(f"{nb_space}", end="")
+            nb_space = 0
+            
+            if j % 8 != 0:
+                print("/", end="")
+    print('\n')
 
 if __name__ == '__main__':
     piece_path = 'pieces/'
     board_path = 'Board_Examples/medium2.png'
     
+    print('Loarding images...')
     board_img = imageResize(cv.imread(board_path), 0.5)
     board_cells_img = getBoardCoords(board_img)
     
@@ -72,5 +124,14 @@ if __name__ == '__main__':
     
     # display_pieces(pieces_img, pieces_path)
     
+    recognized_board = list()
+    print('Recognizing pieces on board...\n')
     for cell_img in board_cells_img:
-        recognize_piece(pieces_path, pieces_img, cell_img)
+        recognized_board.append(recognize_piece(pieces_path, pieces_img, cell_img))
+        
+    simple_display_board(recognized_board)
+    forsyth_edward_display_board(recognized_board)
+    
+    cv.imshow('Board', board_img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
