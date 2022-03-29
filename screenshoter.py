@@ -5,7 +5,7 @@ import cv2
 import pyautogui
 
 
-outputDir = "unlabeled"
+outputDir = "unlabeled_boards"
 
 counter = 0
 if not os.path.exists(outputDir):
