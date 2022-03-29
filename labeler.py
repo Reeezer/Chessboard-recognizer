@@ -84,7 +84,7 @@ def labelImages(images,outputDir):
             listener.join()
         cv2.destroyAllWindows()
         cv2.imwrite(f"{outputDir}/{color}_{piece}_{counter}.png",im)
-        counter += 1bbbkbn
+        counter += 1
         
         
 
