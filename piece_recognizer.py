@@ -76,7 +76,7 @@ def recognize_piece(paths, pieces, cell, labeling=False):
                 return piece_letter.lower()
     else:
         if labeling:
-            return 'empty'
+            return 'empty.png'
         else:
             return '-'
     

@@ -12,7 +12,7 @@ def getFiles(inputDir):
     return filesArray
 
 if __name__ == '__main__':
-    output_dir = 'labeled_constSize/'
+    output_dir = 'labeledConstSize/'
     input_dir = 'unlabeled_boards/'
     piece_path = 'pieces/'
     counter = 0
@@ -35,6 +35,6 @@ if __name__ == '__main__':
         
         for cell_img in board_cells_img:
             piece_name = recognize_piece(pieces_path, pieces_img, cell_img, labeling=True)
-            cv.imwrite(f"{output_dir}{piece_name}_{counter}.png", cell_img)
+            cv.imwrite(f"{output_dir}{piece_name[:-4]}_{counter}.png", cell_img)
             counter += 1
     
