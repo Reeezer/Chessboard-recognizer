@@ -12,7 +12,7 @@ def getFiles(inputDir):
     return filesArray
 
 if __name__ == '__main__':
-    output_dir = 'labeled/'
+    output_dir = 'labeled_constSize/'
     input_dir = 'unlabeled_boards/'
     piece_path = 'pieces/'
     counter = 0

@@ -81,7 +81,7 @@ def cropSquareOut_Contours(croppedBoard):
 
     valid_cnts = findValidContours(thresh, 2000, 4000, croppedBoard)
 
-    squareSize = round(math.sqrt(sum([cv2.contourArea(x) for x in valid_cnts]) / len(valid_cnts)))
+    squareSize = 47
     croppedSquares = []
     for sY in range(0, 8):
         for sX in range(0, 8):
