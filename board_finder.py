@@ -61,8 +61,8 @@ def cropBoardOut_Contours(img):
 
     boardCnt = valid_cnts[0]
     x, y, w, h = cv2.boundingRect(boardCnt)
-    w += 3
-    h += 3
+    w += 10
+    h += 10
     return cropImg(img, x, y, w, h)
 
 
@@ -122,4 +122,11 @@ if __name__ == "__main__":
     #img = imageResize(cv2.imread("Board_Examples/medium.PNG",cv2.IMREAD_GRAYSCALE),0.5)
     img = imageResize(cv2.imread("Board_Examples/medium2.png"), 0.5)
 
-    getBoardCoords(img)
+    imgs = getBoardCoords(img)
+    
+    temp1 = [x.shape for x in imgs]
+    temp = set(temp1)
+
+    temp3 = [temp1.count(x) for x in temp]
+    print(temp)
+    print(temp3)
