@@ -4,8 +4,8 @@ import cv2
 import numpy as np
 import math
 
-squareImgSize = 45
-debugLevel = 1  # display images if debugLevel = 1
+squareImgSize = 47
+debugLevel = 0  # display images if debugLevel = 1
 counter = 0
 
 
@@ -124,7 +124,7 @@ def imageResize(orgImage, resizeFact):
 
 if __name__ == "__main__":
     #img = imageResize(cv2.imread("Board_Examples/medium.PNG",cv2.IMREAD_GRAYSCALE),0.5)
-    img = imageResize(cv2.imread("unlabeled_boards/5.png"), 0.5)
+    img = imageResize(cv2.imread("Board_Examples/medium2.png"), 0.5)
 
     imgs = getBoardCoords(img)
     
