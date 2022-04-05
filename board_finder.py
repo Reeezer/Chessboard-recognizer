@@ -4,7 +4,8 @@ import cv2
 import numpy as np
 import math
 
-debugLevel = 0  # display images if debugLevel = 1
+squareImgSize = 45
+debugLevel = 1  # display images if debugLevel = 1
 counter = 0
 
 
@@ -63,10 +64,10 @@ def cropBoardOut_Contours(img):
     x, y, w, h = cv2.boundingRect(boardCnt)
     w += 10
     h += 10
-    return cropImg(img, x, y, w, h)
+    return cropImg(img, x, y, w, h),x,y
 
 
-def cropSquareOut_Contours(croppedBoard):
+def getSquareSize(croppedBoard):
     gray = cv2.cvtColor(croppedBoard, cv2.COLOR_BGR2GRAY)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))  # <-----
@@ -79,28 +80,31 @@ def cropSquareOut_Contours(croppedBoard):
 
     edged_wide = cv2.Canny(thresh, 10, 200, apertureSize=3)
 
-
-
     valid_cnts = findValidContours(thresh, 2000, 4000, croppedBoard)
 
-    squareSize = 47
-    croppedSquares = []
+    squareSize = round(math.sqrt(sum([cv2.contourArea(x) for x in valid_cnts]) / len(valid_cnts)))
+    return squareSize
+
+
+def getBoardCoords(img):
+    global counter, debugLevel,squareImgSize
+
+    cropedImg,x,y = cropBoardOut_Contours(img)
+    
+
+    squareSize = getSquareSize(cropedImg)
+    
+    cropedSquares = []
+    
     for sY in range(0, 8):
         for sX in range(0, 8):
             xP = sX * squareSize
             yP = sY * squareSize
-            croppedSquares.append(
-                cropImg(croppedBoard, xP, yP, squareSize, squareSize))
-    return croppedSquares
+            square = cropImg(img, xP + x, yP + y, squareSize, squareSize)
 
+            resized_down = cv2.resize(square, (squareImgSize,squareImgSize), interpolation= cv2.INTER_LINEAR)
 
-def getBoardCoords(img):
-    global counter, debugLevel
-
-    cropedImg = cropBoardOut_Contours(img)
-    
-
-    cropedSquares = cropSquareOut_Contours(cropedImg)
+            cropedSquares.append(resized_down)
 
     if debugLevel == 1:
         for s in cropedSquares:
@@ -120,7 +124,7 @@ def imageResize(orgImage, resizeFact):
 
 if __name__ == "__main__":
     #img = imageResize(cv2.imread("Board_Examples/medium.PNG",cv2.IMREAD_GRAYSCALE),0.5)
-    img = imageResize(cv2.imread("Board_Examples/medium2.png"), 0.5)
+    img = imageResize(cv2.imread("unlabeled_boards/5.png"), 0.5)
 
     imgs = getBoardCoords(img)
     
