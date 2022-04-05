@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 
 pieces/
+train_data/
+test_data/
 
 # C extensions
 *.so

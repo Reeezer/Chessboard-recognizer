@@ -1,12 +1,22 @@
 from piece_recognizer import *
 from labeler import *
 
+def get_files_in_dir(inputDir):
+    filesArray = []
+
+    for _root, dirs, _files in os.walk(inputDir):
+        for dir in dirs:
+            for _root, _dirs, files in os.walk(inputDir + dir):
+                for file in files:
+                    filesArray.append(inputDir + dir + '/' + file)
+    
+    return filesArray
+
 def getFiles(inputDir):
     filesArray = []
 
-    for root, dirs, files in os.walk(inputDir):
+    for _root, _dirs, files in os.walk(inputDir):
         for file in files:
-            #print(file)
             filesArray.append(inputDir + file)
     
     return filesArray
@@ -35,6 +45,7 @@ if __name__ == '__main__':
         
         for cell_img in board_cells_img:
             piece_name = recognize_piece(pieces_path, pieces_img, cell_img, labeling=True)
-            cv.imwrite(f"{output_dir}{piece_name[:-4]}_{counter}.png", cell_img)
+            
+            cv.imwrite(f"{output_dir}{piece_name[:-4]}/{counter}.png", cell_img)
             counter += 1
     
