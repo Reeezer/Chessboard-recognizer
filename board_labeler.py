@@ -53,13 +53,14 @@ if __name__ == '__main__':
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+        for k,v in dictClasses.items():
+            os.makedirs(output_dir + k)
     else:
         filesArray = []
         for root, dirs, files in os.walk(output_dir):
             counter += len(files)
     
-    counter += 1000
-    boards_path = getFiles(input_dir)[51::]
+    boards_path = getFiles(input_dir)
     
     pieces_path, pieces_img = get_pieces_images(piece_path)
     
