@@ -1,5 +1,25 @@
 from piece_recognizer import *
 from labeler import *
+from tensorflow import keras
+
+dictClasses = {
+    "empty":0,
+    "bishop_black":1,
+    "bishop_white":2,
+    "king_black":3,
+    "king_white":4,
+    "knight_black":5,
+    "knight_white":6,
+    "pawn_black":7,
+    "pawn_white":8,
+    "queen_black":9,
+    "queen_white":10,
+    "rook_black":11,
+    "rook_white":12,
+}
+
+dctInv = {v: k for k, v in dictClasses.items()} # Inverse dictionary with 0=>empty, 1=>black_bishop, 2=>white_bishop, etc.
+
 
 def get_files_in_dir(inputDir):
     filesArray = []
@@ -22,6 +42,10 @@ def getFiles(inputDir):
     return filesArray
 
 if __name__ == '__main__':
+    
+    import numpy as np
+    
+
     output_dir = 'labeledConstSize/'
     input_dir = 'unlabeled_boards/'
     piece_path = 'all_pieces/'
@@ -34,22 +58,25 @@ if __name__ == '__main__':
         for root, dirs, files in os.walk(output_dir):
             counter += len(files)
     
-    boards_path = getFiles(input_dir)
+    counter += 1000
+    boards_path = getFiles(input_dir)[51::]
     
     pieces_path, pieces_img = get_pieces_images(piece_path)
     
+    model = keras.models.load_model('models/secondmodel')
     for board_path in boards_path:
         board_img = imageResize(cv.imread(board_path), 0.5)
 
         board_cells_img = getBoardCoords(board_img)
+        predictions = model.predict(np.array(board_cells_img))
         
-        for cell_img in board_cells_img:
-            piece_name = recognize_piece(pieces_path, pieces_img, cell_img, labeling=True)
+        for i,im in enumerate(board_cells_img):
+            predictionClassName = dctInv[predictions[i].argmax()]
             
-            if piece_name != 'empty':
-                labels = piece_name.split('_')
-                piece_name = labels[0] + '_' + labels[1]
-            
-            cv.imwrite(f"{output_dir}{piece_name}/{counter}.png", cell_img)
+            cv.imwrite(f"{output_dir}{predictionClassName}/{counter}.png", im)
             counter += 1
+            
+        
+        
+        
     
