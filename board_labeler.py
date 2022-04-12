@@ -36,16 +36,20 @@ if __name__ == '__main__':
     
     boards_path = getFiles(input_dir)
     
+    pieces_path, pieces_img = get_pieces_images(piece_path)
+    
     for board_path in boards_path:
         board_img = imageResize(cv.imread(board_path), 0.5)
 
         board_cells_img = getBoardCoords(board_img)
         
-        pieces_path, pieces_img = get_pieces_images(piece_path)
-        
         for cell_img in board_cells_img:
             piece_name = recognize_piece(pieces_path, pieces_img, cell_img, labeling=True)
             
-            cv.imwrite(f"{output_dir}{piece_name[:-4]}/{counter}.png", cell_img)
+            if piece_name != 'empty':
+                labels = piece_name.split('_')
+                piece_name = labels[0] + '_' + labels[1]
+            
+            cv.imwrite(f"{output_dir}{piece_name}/{counter}.png", cell_img)
             counter += 1
     

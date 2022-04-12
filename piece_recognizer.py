@@ -25,9 +25,10 @@ def display_pieces(pieces, paths):
     cv.waitKey(0) 
     cv.destroyAllWindows()
     
-def recognize_piece(paths, pieces, cell, labeling=False):  
+def recognize_piece(paths, pieces, cell, labeling=False):      
     max_value = float('-inf')
     max_image_path = ''
+    max_image = None
     
     for i in range(len(pieces)):
         piece = pieces[i]
@@ -57,6 +58,7 @@ def recognize_piece(paths, pieces, cell, labeling=False):
                 if max > max_value:
                     max_value = max
                     max_image_path = path
+                    max_image = piece_copy
             except Exception:
                 pass
                 
@@ -76,7 +78,7 @@ def recognize_piece(paths, pieces, cell, labeling=False):
                 return piece_letter.lower()
     else:
         if labeling:
-            return 'empty.png'
+            return 'empty'
         else:
             return '-'
     
