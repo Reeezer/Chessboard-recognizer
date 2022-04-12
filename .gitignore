@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-pieces/
+all_pieces/
 train_data/
 test_data/
 

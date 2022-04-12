@@ -119,7 +119,7 @@ def forsyth_edward_display_board(board):
     print('\n')
 
 if __name__ == '__main__':
-    piece_path = 'pieces/'
+    piece_path = 'all_pieces/'
     board_path = 'Board_Examples/medium2.png'
     
     print('Loarding images...')

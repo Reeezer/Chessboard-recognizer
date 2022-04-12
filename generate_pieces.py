@@ -40,7 +40,7 @@ def save_pieces(pieces_img, pieces_path, path):
 if __name__ == '__main__':
     pieces_path = 'pieces_screens/pieces/'
     backgrounds_path = 'pieces_screens/backgrounds/'
-    path = 'pieces/'
+    path = 'all_pieces/'
     
     pieces_img, pieces_paths, backgrounds_img, backgrounds_paths = get_images(pieces_path, backgrounds_path)
     created_pieces_img, created_pieces_path = create_pieces(pieces_img, pieces_paths, backgrounds_img, backgrounds_paths)

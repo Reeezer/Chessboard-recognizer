@@ -24,7 +24,7 @@ def getFiles(inputDir):
 if __name__ == '__main__':
     output_dir = 'labeledConstSize/'
     input_dir = 'unlabeled_boards/'
-    piece_path = 'pieces/'
+    piece_path = 'all_pieces/'
     counter = 0
     
     if not os.path.exists(output_dir):
