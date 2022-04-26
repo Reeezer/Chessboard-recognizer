@@ -2,6 +2,7 @@ from cmath import inf
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 from board_finder import getBoardCoords, imageResize
 
@@ -63,24 +64,32 @@ def recognize_piece(paths, pieces, cell, labeling=False):
                 pass
                 
     if max_value > 0.38:
-        split = max_image_path.split('_')
         if labeling:
+            split = max_image_path.split('_')
             return split[0] + '_' + split[1]
         else:
-            if split[0] == 'knight':
-                piece_letter = 'n'
-            else:
-                piece_letter = split[0][0]
-            
-            if split[1] == 'white':
-                return piece_letter.upper()
-            else:
-                return piece_letter.lower()
+            return from_piece_to_name(max_image_path)
     else:
         if labeling:
             return 'empty'
         else:
-            return '-'
+            return from_piece_to_name(max_image_path)
+        
+def from_piece_to_name(piece_name):
+    if piece_name == 'empty':
+        return '-'
+    else:
+        split = piece_name.split('_')
+        
+        if split[0] == 'knight':
+            piece_letter = 'n'
+        else:
+            piece_letter = split[0][0]
+        
+        if split[1] == 'white':
+            return piece_letter.upper()
+        else:
+            return piece_letter.lower()
     
 def simple_display_board(board):
     print('Simple board display:')
@@ -117,6 +126,24 @@ def forsyth_edward_display_board(board):
             if j % 8 != 0:
                 print("/", end="")
     print('\n')
+
+    
+def display_recognized_board(board):
+    recognized_board = None
+    line_image = None
+    for i in range(len(board)):
+        if i % 8 == 0 and i != 0:
+            recognized_board = np.concatenate((recognized_board, line_image), axis=1)
+            line_image = None
+        
+        print(f"pieces_screens/pieces/{board[i]}.png")
+        piece = cv.imread(f"pieces_screens/pieces/{board[i]}.png")
+        line_image = np.concatenate((line_image, piece), axis=0)
+    
+    cv.imshow('Recognized board', recognized_board)    
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
 
 if __name__ == '__main__':
     piece_path = 'all_pieces/'
