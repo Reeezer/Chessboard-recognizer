@@ -5,7 +5,7 @@ import numpy as np
 import math
 
 squareImgSize = 47
-debugLevel = 0  # display images if debugLevel = 1
+debugLevel = 1  # display images if debugLevel = 1
 counter = 0
 
 
