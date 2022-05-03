@@ -81,8 +81,8 @@ def main(argv):
     src = imageResize(src,0.5)
     # Check if image is loaded fine
     if src is None:
-        print ('Error opening image!')
-        print ('Usage: hough_lines.py [image_name -- default ' + default_file + '] \n')
+        print('Error opening image!')
+        print('Usage: hough_lines.py [image_name -- default ' + default_file + '] \n')
         return -1
     
     dst = cv.Canny(src, 100, 200, None, 3)
@@ -120,7 +120,8 @@ def main(argv):
     
     cv.waitKey()
     return 0
-    
+
+
 if __name__ == "__main__":
     main(sys.argv[1:])
     
