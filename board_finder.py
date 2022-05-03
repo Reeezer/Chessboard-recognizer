@@ -5,7 +5,7 @@ import numpy as np
 import math
 
 squareImgSize = 47
-debugLevel = 1  # display images if debugLevel = 1
+debugLevel = 0  # display images if debugLevel = 1
 counter = 0
 
 
@@ -16,7 +16,7 @@ def cropImg(img, x, y, w, h):
 def findValidContours(imgTresh, areaMin, areaMax, drawOnImg=None):
     global counter, debugLevel
     contours, hierarchy = cv2.findContours(imgTresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # cv2.CHAIN_APPROX_NONE stores all coords unlike SIMPLE, cv2.RETR_EXTERNAL
-
+    # cv2.imshow(f"img {counter}", im)
     if debugLevel == 1 and isinstance(drawOnImg, np.ndarray):
         imgCpy = drawOnImg.copy()
 
@@ -49,9 +49,9 @@ def cropBoardOut_Contours(img):
     HUE_MAX = (H_high, 255, 255)
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-
+    
     hsvThresh = cv2.inRange(hsv, HUE_MIN, HUE_MAX)
-
+    
     valid_cnts = findValidContours(hsvThresh, 100000, 200000, img)
 
     if len(valid_cnts) != 1:
@@ -77,6 +77,8 @@ def getSquareSize(croppedBoard):
     foundThreash = 220
         # to pick only black squares
     thresh = cv2.inRange(morphed,  foundThreash, foundThreash+50)
+    
+    
 
     edged_wide = cv2.Canny(thresh, 10, 200, apertureSize=3)
 
@@ -124,7 +126,7 @@ def imageResize(orgImage, resizeFact):
 
 if __name__ == "__main__":
     #img = imageResize(cv2.imread("Board_Examples/medium.PNG",cv2.IMREAD_GRAYSCALE),0.5)
-    img = imageResize(cv2.imread("Board_Examples/medium2.png"), 0.5)
+    img = imageResize(cv2.imread("Board_Examples/medium.png"), 0.5)
 
     imgs = getBoardCoords(img)
     
