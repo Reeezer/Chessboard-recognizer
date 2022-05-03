@@ -1,5 +1,3 @@
-from itertools import count
-from telnetlib import DEBUGLEVEL
 import cv2
 import numpy as np
 import math
@@ -15,7 +13,9 @@ def cropImg(img, x, y, w, h):
 
 def findValidContours(imgTresh, areaMin, areaMax, drawOnImg=None):
     global counter, debugLevel
-    contours, hierarchy = cv2.findContours(imgTresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # cv2.CHAIN_APPROX_NONE stores all coords unlike SIMPLE, cv2.RETR_EXTERNAL
+    # cv2.CHAIN_APPROX_NONE stores all coords unlike SIMPLE, cv2.RETR_EXTERNAL
+    contours, hierarchy = cv2.findContours(
+        imgTresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     if debugLevel == 1 and isinstance(drawOnImg, np.ndarray):
         imgCpy = drawOnImg.copy()
@@ -42,7 +42,6 @@ def findValidContours(imgTresh, areaMin, areaMax, drawOnImg=None):
 
 
 def cropBoardOut_Contours(img):
-
     H_low = (11/255)*180
     H_high = (35/255)*180
     HUE_MIN = (H_low, 0, 0)
@@ -64,7 +63,7 @@ def cropBoardOut_Contours(img):
     x, y, w, h = cv2.boundingRect(boardCnt)
     w += 10
     h += 10
-    return cropImg(img, x, y, w, h),x,y
+    return cropImg(img, x, y, w, h), x, y
 
 
 def getSquareSize(croppedBoard):
@@ -75,7 +74,7 @@ def getSquareSize(croppedBoard):
 
     # find canny edge
     foundThreash = 220
-        # to pick only black squares
+    # to pick only black squares
     thresh = cv2.inRange(morphed,  foundThreash, foundThreash+50)
 
     edged_wide = cv2.Canny(thresh, 10, 200, apertureSize=3)
@@ -87,22 +86,21 @@ def getSquareSize(croppedBoard):
 
 
 def getBoardCoords(img):
-    global counter, debugLevel,squareImgSize
+    global counter, debugLevel, squareImgSize
 
-    cropedImg,x,y = cropBoardOut_Contours(img)
-    
+    cropedImg, x, y = cropBoardOut_Contours(img)
 
     squareSize = getSquareSize(cropedImg)
-    
+
     cropedSquares = []
-    
+
     for sY in range(0, 8):
         for sX in range(0, 8):
             xP = sX * squareSize
             yP = sY * squareSize
             square = cropImg(img, xP + x, yP + y, squareSize, squareSize)
 
-            resized_down = cv2.resize(square, (squareImgSize,squareImgSize), interpolation= cv2.INTER_LINEAR)
+            resized_down = cv2.resize(square, (squareImgSize, squareImgSize), interpolation=cv2.INTER_LINEAR)
 
             cropedSquares.append(resized_down)
 
@@ -117,17 +115,15 @@ def getBoardCoords(img):
 
 
 def imageResize(orgImage, resizeFact):
-    dim = (int(orgImage.shape[1]*resizeFact),
-           int(orgImage.shape[0]*resizeFact))  # w, h
+    dim = (int(orgImage.shape[1]*resizeFact), int(orgImage.shape[0]*resizeFact))  # w, h
     return cv2.resize(orgImage, dim, cv2.INTER_AREA)
 
 
 if __name__ == "__main__":
-    #img = imageResize(cv2.imread("Board_Examples/medium.PNG",cv2.IMREAD_GRAYSCALE),0.5)
     img = imageResize(cv2.imread("Board_Examples/medium2.png"), 0.5)
 
     imgs = getBoardCoords(img)
-    
+
     temp1 = [x.shape for x in imgs]
     temp = set(temp1)
 
